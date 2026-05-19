@@ -1,0 +1,13 @@
+# Executed notebook with large embedded outputs
+PowerPlant_ANN_executed.ipynb
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Claude memory
+.claude/

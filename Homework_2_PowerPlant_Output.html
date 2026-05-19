@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Final Homework 2: Combined Cycle Power Plant Output Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<script>
+MathJax = {
+  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+<style>
+:root {
+  --primary: #12355b;
+  --accent: #2980b9;
+  --highlight: #eaf2f8;
+  --bg: #ffffff;
+  --text: #2c3e50;
+  --border: #e1e8ed;
+  --code-bg: #fdfdfd;
+  --task-border: #e74c3c;
+  --question-border: #8e44ad;
+  --info-border: #27ae60;
+}
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 11pt;
+  margin: 0; padding: 0;
+  background: #f4f6f9;
+}
+.page-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 50px 60px;
+  background: var(--bg);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
+.header {
+  border-bottom: 3px solid var(--primary);
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+.course-title {
+  font-size: 10pt; font-weight: 700; color: var(--primary);
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 5px;
+}
+.worksheet-title {
+  font-family: 'Merriweather', serif; font-size: 22pt; color: #000;
+  margin: 0 0 10px 0; line-height: 1.2;
+}
+.subtitle { font-size: 12pt; color: #6c7a89; font-style: italic; }
+.meta-info {
+  display: flex; gap: 30px; margin-top: 15px; font-size: 9.5pt; color: #7f8c8d;
+}
+.meta-info span { font-weight: 600; color: var(--primary); }
+h2 {
+  font-family: 'Merriweather', serif; font-size: 16pt; color: var(--primary);
+  border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-top: 40px;
+}
+h3 { font-size: 13pt; color: var(--accent); margin-top: 25px; }
+p { margin-bottom: 15px; }
+pre {
+  background: var(--code-bg); border: 1px solid var(--border);
+  border-left: 4px solid var(--primary); border-radius: 4px;
+  padding: 15px; overflow-x: auto;
+  font-family: 'Fira Code', monospace; font-size: 9.5pt; white-space: pre;
+}
+.kw { color: #d73a49; font-weight: 600; }
+.func { color: #6f42c1; }
+.str { color: #032f62; }
+.comment { color: #6a737d; font-style: italic; }
+.concept-box {
+  background: var(--highlight); border-left: 4px solid var(--accent);
+  padding: 15px 20px; margin: 25px 0; border-radius: 0 5px 5px 0;
+}
+.concept-box h4 { margin: 0 0 10px 0; color: var(--accent); font-size: 11pt; text-transform: uppercase; }
+.info-box {
+  background: #e8f8f5; border-left: 4px solid var(--info-border);
+  padding: 15px 20px; margin: 25px 0; border-radius: 0 5px 5px 0;
+}
+.info-box h4 { margin: 0 0 10px 0; color: var(--info-border); font-size: 11pt; }
+.task-box {
+  background: #fdf2f2; border: 1px solid #fadbd8;
+  border-left: 5px solid var(--task-border);
+  padding: 20px; margin: 30px 0; border-radius: 4px;
+}
+.task-header {
+  font-weight: 700; color: #c0392b; font-size: 12pt; margin-bottom: 10px;
+  display: flex; align-items: center;
+}
+.task-header::before { content: "✏️"; margin-right: 8px; }
+.question-box {
+  background: #f5f0ff; border: 1px solid #e8daef;
+  border-left: 5px solid var(--question-border);
+  padding: 20px; margin: 30px 0; border-radius: 4px;
+}
+.question-header {
+  font-weight: 700; color: var(--question-border); font-size: 12pt;
+  margin-bottom: 10px; display: flex; align-items: center;
+}
+.question-header::before { content: "🔍"; margin-right: 8px; }
+table {
+  border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 10pt;
+}
+th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; }
+th { background: var(--primary); color: #fff; font-weight: 600; }
+tr:nth-child(even) { background: #f8f9fa; }
+.warning-box {
+  background: #fef9e7; border-left: 4px solid #f39c12;
+  padding: 15px 20px; margin: 25px 0; border-radius: 0 5px 5px 0;
+}
+.warning-box h4 { margin: 0 0 10px 0; color: #e67e22; font-size: 11pt; }
+@media print {
+  body { background: #fff; }
+  .page-container { box-shadow: none; margin: 0; padding: 0; max-width: 100%; }
+  .task-box, .concept-box, .question-box, pre { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-container">
+
+  <div class="header">
+    <div class="course-title">Applied AI in Mechanical Systems — Final Homework</div>
+    <h1 class="worksheet-title">Combined Cycle Power Plant Energy Output Prediction</h1>
+    <div class="subtitle">Homework 2: ANN Regression on Thermodynamic Data</div>
+    <div class="meta-info">
+      <div><span>Model Type:</span> ANN (Fully Connected)</div>
+      <div><span>Problem:</span> Regression</div>
+      <div><span>Dataset:</span> UCI — Combined Cycle Power Plant</div>
+    </div>
+  </div>
+
+  <!-- Section 1 -->
+  <h2>1. Problem Definition</h2>
+
+  <p>A <strong>Combined Cycle Power Plant (CCPP)</strong> integrates gas turbines (GT) and steam turbines (ST) connected through heat recovery steam generators (HRSG). In this configuration, the exhaust heat from the gas turbine is used to generate steam, which drives a secondary steam turbine. This "combined cycle" achieves thermal efficiencies of up to <strong>60%</strong>, significantly higher than simple-cycle plants (~35%).</p>
+
+  <p>The net electrical energy output of a CCPP is strongly influenced by <strong>ambient conditions</strong>. Gas turbine performance degrades at higher ambient temperatures (lower air density reduces mass flow rate), while steam turbine efficiency is affected by exhaust vacuum levels and humidity. Understanding and predicting this relationship is critical for <strong>power grid load planning</strong> and <strong>plant performance optimization</strong>.</p>
+
+  <div class="concept-box">
+    <h4>🎯 Your Objective</h4>
+    <p>Build an ANN model to predict the <strong>net hourly electrical energy output</strong> (MW) of a combined cycle power plant based on four ambient variables. The dataset contains <strong>9,568 hourly measurements</strong> collected over 6 years (2006–2011) when the plant operated at full load.</p>
+  </div>
+
+  <h3>1.1 Dataset Description</h3>
+  <p>The data was collected from sensors distributed throughout the plant, recording ambient conditions every second. The values provided are hourly averages.</p>
+
+  <table>
+    <tr>
+      <th>#</th>
+      <th>Feature Name</th>
+      <th>Symbol</th>
+      <th>Unit</th>
+      <th>Range</th>
+      <th>Physical Meaning</th>
+    </tr>
+    <tr><td>1</td><td>Temperature</td><td>T</td><td>°C</td><td>1.81 – 37.11</td><td>Ambient air temperature affects GT inlet air density</td></tr>
+    <tr><td>2</td><td>Ambient Pressure</td><td>AP</td><td>mbar</td><td>992.89 – 1033.30</td><td>Atmospheric pressure influences air mass flow</td></tr>
+    <tr><td>3</td><td>Relative Humidity</td><td>RH</td><td>%</td><td>25.56 – 100.16</td><td>Moisture content affects combustion and heat transfer</td></tr>
+    <tr><td>4</td><td>Exhaust Vacuum</td><td>V</td><td>cm Hg</td><td>25.36 – 81.56</td><td>Condenser vacuum level affects ST back-pressure</td></tr>
+    <tr>
+      <td><strong>Output</strong></td>
+      <td><strong>Energy Output</strong></td>
+      <td><strong>EP</strong></td>
+      <td><strong>MW</strong></td>
+      <td><strong>420.26 – 495.76</strong></td>
+      <td><strong>Net electrical power produced hourly</strong></td>
+    </tr>
+  </table>
+
+  <div class="info-box">
+    <h4>📊 Dataset Source</h4>
+    <p><strong>Source:</strong> UCI Machine Learning Repository — <a href="https://archive.ics.uci.edu/dataset/294/combined+cycle+power+plant" target="_blank">Combined Cycle Power Plant</a></p>
+    <p><strong>Citation:</strong> Tüfekci, P. (2014). <em>Prediction of full load electrical power output of a base load operated combined cycle power plant using machine learning methods.</em> Int. J. of Electrical Power & Energy Systems, 60, 126–140.</p>
+    <p>The CSV file <code>power_plant_data.csv</code> is provided in your homework folder.</p>
+  </div>
+
+  <!-- Section 2 -->
+  <h2>2. Getting Started</h2>
+
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> plt
+<span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> train_test_split
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">import</span> tensorflow <span class="kw">as</span> tf
+<span class="kw">from</span> tensorflow.keras.models <span class="kw">import</span> Sequential
+<span class="kw">from</span> tensorflow.keras.layers <span class="kw">import</span> Dense
+
+<span class="comment"># ── Step 1: Load the Dataset ──</span>
+df = pd.read_excel(<span class="str">'power_plant_data.xlsx'</span>)
+<span class="func">print</span>(df.head())
+<span class="func">print</span>(<span class="str">f"Dataset shape: {df.shape}"</span>)
+<span class="func">print</span>(df.describe())
+
+<span class="comment"># ── Step 2: Separate Features and Target ──</span>
+X = df[[<span class="str">'AT'</span>, <span class="str">'AP'</span>, <span class="str">'RH'</span>, <span class="str">'V'</span>]].values   <span class="comment"># 4 input features</span>
+y = df[<span class="str">'PE'</span>].values                         <span class="comment"># Energy output (MW)</span>
+
+<span class="comment"># ── Step 3: Train/Test Split ──</span>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=<span class="str">0.2</span>, random_state=<span class="str">42</span>)
+
+<span class="comment"># ── Step 4: Normalize Features ──</span>
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+<span class="func">print</span>(<span class="str">f"\nTraining samples: {X_train.shape[0]}"</span>)
+<span class="func">print</span>(<span class="str">f"Test samples: {X_test.shape[0]}"</span>)</pre>
+
+  <!-- Section 3: Tasks -->
+  <h2>3. Coding Tasks</h2>
+
+  <div class="task-box">
+    <div class="task-header">Task A: Build, Train, and Evaluate an ANN</div>
+    <p>Design an ANN regression model for this problem:</p>
+    <ul>
+      <li>Input: 4 features → Output: 1 continuous value (MW)</li>
+      <li>Use at least <strong>2 hidden layers</strong> with appropriate neurons</li>
+      <li>Compile with <code>adam</code> optimizer and <code>mse</code> loss</li>
+      <li>Use <code>validation_split=0.15</code> and train for sufficient epochs</li>
+      <li>Implement <code>EarlyStopping</code> callback to prevent overfitting:
+<pre><span class="kw">from</span> tensorflow.keras.callbacks <span class="kw">import</span> EarlyStopping
+
+early_stop = EarlyStopping(monitor=<span class="str">'val_loss'</span>, patience=<span class="str">15</span>, restore_best_weights=<span class="str">True</span>)</pre>
+      </li>
+    </ul>
+    <p><strong>Deliverables:</strong> Model summary, training/validation loss plot, test MSE, test MAE, and R² score.</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-header">Task B: Prediction Visualization</div>
+    <p>Create the following two plots side by side using <code>plt.subplots(1, 2)</code>:</p>
+    <ol>
+      <li><strong>Left plot:</strong> Scatter plot of Actual vs. Predicted energy output, with a 45° reference line.</li>
+      <li><strong>Right plot:</strong> Histogram of prediction errors (residuals: $e = y_{actual} - y_{predicted}$). Add a vertical line at $e = 0$.</li>
+    </ol>
+    <p>Analyze the residual distribution: Is it centered around zero? Is it symmetric? What does this tell you about your model's bias?</p>
+  </div>
+
+  <div class="task-box">
+    <div class="task-header">Task C: Optimizer Comparison</div>
+    <p>Train the <strong>same architecture</strong> three separate times using different optimizers:</p>
+    <ol>
+      <li><code>optimizer='sgd'</code> (Stochastic Gradient Descent)</li>
+      <li><code>optimizer='rmsprop'</code></li>
+      <li><code>optimizer='adam'</code></li>
+    </ol>
+    <p>For each optimizer, record:</p>
+    <ul>
+      <li>Final test MSE and R² score</li>
+      <li>Number of epochs until convergence (when EarlyStopping triggers)</li>
+    </ul>
+    <p>Present results in a comparison table. Which optimizer converges fastest? Which achieves the lowest error? Explain the differences based on how each optimizer updates its learning rate.</p>
+  </div>
+
+  <!-- Section 4: Comprehension -->
+  <h2>4. Comprehension Questions</h2>
+
+  <div class="question-box">
+    <div class="question-header">Question 1: Physical Interpretation</div>
+    <p>Based on basic thermodynamics, we expect the energy output to <strong>decrease</strong> with increasing ambient temperature (higher T → lower air density → lower mass flow → lower GT output). After training your model, verify this by:</p>
+    <ol>
+      <li>Holding AP, RH, and V constant at their mean values</li>
+      <li>Sweeping T from 2°C to 37°C</li>
+      <li>Plotting the model's predicted EP vs. T</li>
+    </ol>
+    <p>Does your ANN capture this expected physical trend? If not, what could be wrong?</p>
+  </div>
+
+  <div class="question-box">
+    <div class="question-header">Question 2: Early Stopping Mechanism</div>
+    <p>Explain in your own words what <code>EarlyStopping(patience=15, restore_best_weights=True)</code> does. Why is <code>patience</code> set to 15 instead of 1? What would happen if we trained for 1000 epochs <strong>without</strong> EarlyStopping on this dataset? Draw a conceptual sketch of what the training and validation loss curves would look like.</p>
+  </div>
+
+  <div class="question-box">
+    <div class="question-header">Question 3: Feature Count vs. Model Complexity</div>
+    <p>This dataset has only <strong>4 input features</strong>, compared to the 8 features in the Concrete Strength dataset. Yet it has <strong>9,568 samples</strong> (vs. 1,030). How does the ratio of <em>samples-to-features</em> affect the risk of overfitting? Would you expect to need a more complex or simpler model architecture for this dataset compared to a dataset with 100 features and only 500 samples? Justify your answer.</p>
+  </div>
+
+  <div class="question-box">
+    <div class="question-header">Question 4: Standardization vs. Min-Max Normalization</div>
+    <p>In the starter code, we used <code>StandardScaler</code> (z-score normalization). An alternative is <code>MinMaxScaler</code> which scales features to [0, 1]. Write the mathematical formula for both methods. Then explain: for features that contain <strong>outliers</strong>, which normalization method would be more robust? Why?</p>
+  </div>
+
+  <div class="question-box">
+    <div class="question-header">Question 5: Model Deployment Scenario</div>
+    <p>Imagine deploying your trained model to a real power plant control room. A sensor measuring Ambient Pressure (AP) malfunctions and starts sending constant readings of <strong>0 mbar</strong>. Without retraining the model, what would happen to the predictions? Explain specifically what value the StandardScaler would produce for AP=0 and why this would cause inaccurate predictions.</p>
+  </div>
+
+</div>
+</body>
+</html>
