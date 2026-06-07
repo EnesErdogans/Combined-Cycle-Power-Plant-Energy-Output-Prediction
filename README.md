@@ -275,5 +275,5 @@ Comparison table + loss curves + explanation of convergence behavior per optimiz
 **Applied AI in Mechanical Systems — Final Homework 2**
 
 *Enes Erdoğan · eeneserdogan50@gmail.com*
-
+*Ahmet Emre Bilge · ahmetemre.bilge@agu.edu.tr*
 </div>
